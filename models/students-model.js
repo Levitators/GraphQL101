@@ -1,8 +1,8 @@
 'use strict'
 
 export default (sequelize, DataTypes) => {
-    return sequelize.define('owner', {
-        id: {
+    return sequelize.define('students', {
+        user_id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true
@@ -18,18 +18,13 @@ export default (sequelize, DataTypes) => {
             values: ['M', 'F']
 
         },
-        designation: {
+        department: {
             type: DataTypes.STRING(50),
             required: true,
             allowNull: false
         },
         joined_date: {
             type: DataTypes.DATE,
-            required: true,
-            allowNull: false
-        },
-        department: {
-            type: DataTypes.STRING(50),
             required: true,
             allowNull: false
         },

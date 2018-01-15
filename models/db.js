@@ -1,7 +1,9 @@
 'use strict'
 
 import Sequelize from 'sequelize'
-import employeeModel from './employeeModel'
+import studentsModel from './students-model'
+import booksModel from './books-model'
+import rentHistoryModel from './rent-history-model'
 
 const db = {}
 const sequelize = new Sequelize(process.env.DB_CONNECTION_STRING, {
@@ -9,6 +11,8 @@ const sequelize = new Sequelize(process.env.DB_CONNECTION_STRING, {
 })
 
 db.sequelize = sequelize
-db.employee = employeeModel(sequelize, Sequelize)
+db.students = studentsModel(sequelize, Sequelize)
+db.books = booksModel(sequelize, Sequelize)
+db.rent_history = rentHistoryModel(sequelize, Sequelize)
 
 export default db

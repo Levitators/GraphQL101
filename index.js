@@ -11,7 +11,7 @@ const app = new Koa()
 
 app.use(bodyParser())
 app.use(authRoutes.routes())
-app.use(graphqlRoute.routes())
+app.use(graphqlRoute.routes()).use(graphqlRoute.allowedMethods())
 
 app.use(async ctx => {
     ctx.body = ctx.request.body
@@ -21,7 +21,7 @@ app.use(async ctx => {
     try {
         await db.sequelize.authenticate()
         app.listen(process.env.PORT, () => {
-            // db.sequelize.sync()
+            db.sequelize.sync()
             console.log(`App running at ${process.env.PORT}`)
         })
     } catch (error) {

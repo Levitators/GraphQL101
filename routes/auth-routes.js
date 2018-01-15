@@ -8,9 +8,9 @@ import db from '../models/db'
 const router = new Router()
 
 router.post('/login', async (ctx) => {
-    let user = await db.employee.find({where: {email_id: ctx.request.body.email_id}})
+    const user = await db.students.find({where: {email_id: ctx.request.body.email_id}})
     if (user) {
-        let validPass = await bcrypt.compare(ctx.request.body.password, user.password_hash)
+        const validPass = await bcrypt.compare(ctx.request.body.password, user.password_hash)
         if (validPass) {
             ctx.body = {status: 200, payload: [{auth_token: JWTGenerator(user.id)}]}
         } else {
@@ -22,14 +22,14 @@ router.post('/login', async (ctx) => {
 })
 
 router.post('/register', async (ctx) => {
-    let employee = await db.employee.find({
+    const student = await db.students.find({
         where: {email_id: ctx.request.body.email_id}
     })
-    if (employee) {
+    if (student) {
         ctx.body = {status: 409, payload: [{message: 'User already exist'}]}
     } else {
-        let hash = await bcrypt.hash(ctx.request.body.password, 10)
-        let newOwner = await db.employee.create({
+        const hash = await bcrypt.hash(ctx.request.body.password, 10)
+        const newOwner = await db.students.create({
             username: ctx.request.body.username,
             email_id: ctx.request.body.email_id,
             sex: ctx.request.body.sex,
