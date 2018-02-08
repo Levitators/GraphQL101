@@ -9,17 +9,17 @@ export default new GraphQLObjectType({
         book_id: {
             type: GraphQLInt,
             resolve: book =>
-                book.book_id
+                book._id
         },
         title: {
             type: GraphQLString,
             resolve: book =>
                 book.title
         },
-        author: {
+        author_id: {
             type: GraphQLString,
             resolve: book =>
-                book.author
+                book.authorId
         },
         edition: {
             type: GraphQLString,
@@ -30,11 +30,6 @@ export default new GraphQLObjectType({
             type: GraphQLString,
             resolve: book =>
                 book.rented
-        },
-        rent_id: {
-            type: GraphQLString,
-            resolve: book =>
-                book.rent_id
         }
     })
 })

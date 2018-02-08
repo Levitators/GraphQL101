@@ -29,7 +29,7 @@ export default new GraphQLObjectType({
                 department: {
                     type: GraphQLString
                 },
-                username: {
+                student_name: {
                     type: GraphQLString
                 },
                 password: {
@@ -44,13 +44,43 @@ export default new GraphQLObjectType({
             },
             resolve: (root, args, context) => context.userRegister.load({...args})
         },
-        rentBook: ({
+        addBook: {
+            type: bookType,
+            args: {
+                title: {
+                    type: GraphQLString
+                },
+                author_id: {
+                    type: GraphQLInt
+                },
+                edition: {
+                    type: GraphQLString
+                }
+            },
+            resolve: (root, args, context) => context.addBook.load({...args})
+        },
+        addAuthorAndBook: {
+            type: bookType,
+            args: {
+                title: {
+                    type: GraphQLString
+                },
+                author_name: {
+                    type: GraphQLString
+                },
+                edition: {
+                    type: GraphQLString
+                }
+            },
+            resolve: (root, args, context) => context.addAuthorAndBook.load({...args})
+        },
+        rentBook: {
             type: bookType,
             args: {
                 book_id: {
                     type: GraphQLInt
                 },
-                user_id: {
+                student_id: {
                     type: GraphQLInt
                 },
                 days: {
@@ -58,6 +88,15 @@ export default new GraphQLObjectType({
                 }
             },
             resolve: (root, args, context) => context.bookRent.load({...args})
-        })
+        },
+        returnBook: {
+            type: bookType,
+            args: {
+                book_id: {
+                    type: GraphQLInt
+                }
+            },
+            resolve: (root, args, context) => context.returnBook.load({...args})
+        }
     })
 })

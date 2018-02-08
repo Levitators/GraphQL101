@@ -2,7 +2,7 @@
 
 export default (sequelize, DataTypes) => {
     return sequelize.define('books', {
-        book_id: {
+        _id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true
@@ -12,14 +12,8 @@ export default (sequelize, DataTypes) => {
             required: true,
             allowNull: false
         },
-        author: {
-            type: DataTypes.STRING(120),
-            required: true,
-            allowNull: false
-
-        },
         edition: {
-            type: DataTypes.STRING(50),
+            type: DataTypes.STRING(120),
             required: true,
             allowNull: false
         },
@@ -27,11 +21,6 @@ export default (sequelize, DataTypes) => {
             type: DataTypes.BOOLEAN,
             required: true,
             allowNull: false
-        },
-        rent_id: {
-            type: DataTypes.INTEGER,
-            required: true,
-            allowNull: true
         }
     })
 }

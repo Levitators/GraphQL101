@@ -1,6 +1,6 @@
 'use strict'
 
-import { GraphQLObjectType, GraphQLString, GraphQLInt } from 'graphql'
+import { GraphQLObjectType, GraphQLString, GraphQLInt, GraphQLList } from 'graphql'
 import studentType from './student-schema'
 import bookType from './book-schema'
 
@@ -15,7 +15,7 @@ export default new GraphQLObjectType({
                     type: GraphQLString,
                     default_value: () => null
                 },
-                user_id: {
+                student_id: {
                     type: GraphQLInt,
                     default_value: () => null
                 },
@@ -23,7 +23,7 @@ export default new GraphQLObjectType({
                     type: GraphQLString,
                     default_value: () => null
                 },
-                username: {
+                student_name: {
                     type: GraphQLString,
                     default_value: () => null
                 }
@@ -31,9 +31,9 @@ export default new GraphQLObjectType({
             resolve: (root, args, context) => context.userFetcher.load({...args})
         },
         book: {
-            type: bookType,
+            type: new GraphQLList(bookType),
             args: {
-                book_id: {
+                _id: {
                     type: GraphQLInt,
                     default_value: () => null
                 },
@@ -41,8 +41,8 @@ export default new GraphQLObjectType({
                     type: GraphQLString,
                     default_value: () => null
                 },
-                author: {
-                    type: GraphQLString,
+                authorId: {
+                    type: GraphQLInt,
                     default_value: () => null
                 },
                 rent_id: {

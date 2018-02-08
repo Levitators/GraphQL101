@@ -2,12 +2,12 @@
 
 export default (sequelize, DataTypes) => {
     return sequelize.define('students', {
-        user_id: {
+        _id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true
         },
-        username: {
+        student_name: {
             type: DataTypes.STRING(50),
             required: true,
             allowNull: false

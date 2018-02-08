@@ -24,7 +24,7 @@ const fetchUser = (id) => {
 
 const fetchBook = (id) => {
     try {
-        return db.books.find({where: id})
+        return db.books.findAll({where: id})
     } catch (e) {
         console.log('Error', e)
     }
@@ -36,7 +36,7 @@ const registerUser = async (id) => {
         if (!oldUser) {
             const hash = await bcrypt.hash(id.password, 10)
             return db.students.create({
-                username: id.username,
+                student_name: id.student_name,
                 email_id: id.email_id,
                 sex: id.sex,
                 designation: id.designation,
@@ -52,20 +52,65 @@ const registerUser = async (id) => {
 
 const rentBook = async (req) => {
     try {
-        const hasBooks = await db.rent_history.find({where: {user_id: req.user_id, returned: false}})
-        if (hasBooks === null || hasBooks.length < 3) {
-            const bookRent = await db.rent_history.create({
-                user_id: req.user_id,
-                book_id: req.book_id,
-                rented_days: req.days,
-                date: (new Date()).toISOString().substring(0, 10),
-                returned: false
-            })
-            await db.books.update({rented: true, rent_id: bookRent.id}, {where: {book_id: req.book_id}})
-            return db.books.find({where: {book_id: req.book_id}})
+        const book = await db.books.find({where: {_id: req.book_id}})
+        if (!book.rented) {
+            const hasBooks = await db.rent_history.findAll({where: {studentId: req.student_id, returned: false}})
+            if (hasBooks.length < 3) {
+                await db.rent_history.create({
+                    studentId: req.student_id,
+                    bookId: req.book_id,
+                    rented_days: req.days,
+                    date: (new Date()).toISOString().substring(0, 10),
+                    returned: false
+                })
+                await db.books.update({rented: true}, {where: {_id: req.book_id}})
+                return db.books.find({where: {_id: req.book_id}})
+            }
         }
     } catch (e) {
         console.log('Error', e)
+    }
+}
+
+const addNewBook = async (req) => {
+    try {
+        return db.books.create({
+            title: req.title,
+            authorId: req.author_id,
+            edition: req.edition,
+            rented: false,
+            rent_id: null
+        })
+    } catch (e) {
+        console.log('Error', e)
+    }
+}
+
+const addNewAuthorAndBook = async (req) => {
+    try {
+        const author = await db.authors.create({author_name: req.author_name})
+        return db.books.create({
+            title: req.title,
+            authorId: author._id,
+            edition: req.edition,
+            rented: false,
+            rent_id: null
+        })
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+const bookReturn = async (req) => {
+    try {
+        const book = await db.books.find({where: {_id: req.book_id}})
+        if (book.rented) {
+            await db.rent_history.update({returned: true}, {where: {bookId: req.book_id, returned: false}})
+            await db.books.update({rented: false}, {where: {_id: req.book_id}})
+            return db.books.find({where: {_id: req.book_id}})
+        }
+    } catch (e) {
+        console.log(e)
     }
 }
 
@@ -77,13 +122,22 @@ const userRegister = new DataLoader(keys => Promise.all(keys.map(registerUser)))
 
 const bookRent = new DataLoader(keys => Promise.all(keys.map(rentBook)))
 
+const addBook = new DataLoader(keys => Promise.all(keys.map(addNewBook)))
+
+const addAuthorAndBook = new DataLoader(keys => Promise.all(keys.map(addNewAuthorAndBook)))
+
+const returnBook = new DataLoader(keys => Promise.all(keys.map(bookReturn)))
+
 router.all('/graphql', graphqlHTTP({
     schema: schema,
     context: {
         userFetcher,
         bookFetcher,
         userRegister,
-        bookRent
+        bookRent,
+        addBook,
+        addAuthorAndBook,
+        returnBook
     },
     graphiql: true
 }))

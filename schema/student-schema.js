@@ -7,15 +7,15 @@ export default new GraphQLObjectType({
     description: 'Schema of the student object',
 
     fields: () => ({
-        username: {
+        student_name: {
             type: GraphQLString,
             resolve: user =>
-                user.username
+                user.student_name
         },
-        user_id: {
+        _id: {
             type: GraphQLInt,
             resolve: user =>
-                user.user_id
+                user._id
         },
         department: {
             type: GraphQLString,
