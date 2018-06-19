@@ -22,7 +22,17 @@ column: number;
 
 interface IQuery {
 __typename: "Query";
-users: Array<IUser>;
+users: Array<IUser> | null;
+user: IUser | null;
+facebookUser: IUser | null;
+}
+
+interface IUserOnQueryArguments {
+email: string;
+}
+
+interface IFacebookUserOnQueryArguments {
+facebookUserId: string;
 }
 
 interface IUser {
@@ -36,7 +46,12 @@ username: string;
 
 interface IMutation {
 __typename: "Mutation";
+AuthenticateFacebookUser: IAuthResponse | null;
 createUser: IUser | null;
+}
+
+interface IAuthenticateFacebookUserOnMutationArguments {
+facebookToken: string;
 }
 
 interface ICreateUserOnMutationArguments {
@@ -44,6 +59,12 @@ email: string;
 googleUserId: string;
 facebookUserId: string;
 username: string;
+}
+
+interface IAuthResponse {
+__typename: "AuthResponse";
+auth_token: string;
+user: IUser | null;
 }
 }
 

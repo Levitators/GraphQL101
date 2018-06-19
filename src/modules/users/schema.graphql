@@ -7,7 +7,9 @@ type User {
 }
 
 type Query {
-  users: [User]!
+  users: [User]
+  user(email: String!): User
+  facebookUser(facebookUserId: String!): User
 }
 
 type Mutation {

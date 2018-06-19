@@ -1,12 +1,22 @@
 import { ResolverMap } from "../../types/graphql-utils"
-import { UserEntity } from "../../entity/user"
 import { facebookUser, user, createUser } from "../users/resolvers"
+import { genToken } from "../../utils/jwtTokenGenerator"
 import axios from "axios"
 
 interface FacebookUser {
   id: string
   email: string
   first_name: string
+}
+
+interface AuthResponse {
+  user: User,
+  auth_token: string
+}
+
+interface ErrorPayload {
+  message: string
+  error: any
 }
 
 interface User {
@@ -18,17 +28,29 @@ interface User {
 }
 
 export const resolvers: ResolverMap = {
-  Query: {
-    hello: (_, { name }) => `Bye ${name || "World"}`
-  },
   Mutation: {
-    AuthenticateFacebookUser: async (_, { facebookToken }) => {
-      const myUser = await getFacebookUserDetails(facebookToken)
-      const foundUser = await checkUserExists(myUser.id, myUser.email)
-      if (foundUser.length) {
-        // TODO Generate JWT token
-      } else {
-        // Create user and generate JWT token for that user
+    AuthenticateFacebookUser: async (_, {facebookToken}: GQL.IAuthenticateFacebookUserOnMutationArguments): Promise<AuthResponse | ErrorPayload> => {
+      try {
+        const facebookUserDetails = await getFacebookUserDetails(facebookToken)
+        const { id: facebookUserId, email, first_name: username } = facebookUserDetails
+        const foundUser = await checkUserExists(facebookUserId, email)
+        if(foundUser) {
+          return Promise.resolve({
+            auth_token: genToken(foundUser.id),
+            user: foundUser
+          })
+        } else {
+          const createdUser = await createUser({email, facebookUserId, username, googleUserId: ""})
+          return Promise.resolve({
+            auth_token: genToken(createdUser.id),
+            user: createdUser
+          })
+        }
+      } catch(error) {
+        return Promise.reject({
+          message: 'Auth failed',
+          error
+        })
       }
     }
   }
@@ -43,9 +65,9 @@ async function getFacebookUserDetails(facebookToken: string): Promise<FacebookUs
   }
 }
 
-async function checkUserExists(facebookUserId: string, email: string): Promise<User[]> {
+async function checkUserExists(facebookUserId: string, email: string): Promise<User | undefined> {
   let foundUser = await facebookUser(facebookUserId)
-  if (!foundUser.length) {
+  if(!foundUser) {
     foundUser = await user(email)
   }
   return Promise.resolve(foundUser)
