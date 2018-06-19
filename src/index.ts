@@ -1,16 +1,12 @@
 
-import { importSchema } from "graphql-import";
 import { GraphQLServer } from "graphql-yoga";
 import { createConnection } from "typeorm";
-import * as path from "path";
+import { generateSchema } from "./utils/generateSchema";
 import * as dotenv from 'dotenv-safe';
 dotenv.config()
 
-import { resolvers } from "./resolvers";
 
-const typeDefs = importSchema(path.join(__dirname, "./schema.graphql"));
-
-const server = new GraphQLServer({ typeDefs, resolvers });
+const server = new GraphQLServer({ schema: generateSchema() });
 createConnection()
   .then(() => {
     server.start(() => console.log(`Server is running on localhost:${process.env.PORT}`));

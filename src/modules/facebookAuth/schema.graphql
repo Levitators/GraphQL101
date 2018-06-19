@@ -1,0 +1,12 @@
+type authResponse {
+  token: String!
+}
+
+type Query {
+  hello(name: String): String!
+}
+
+type Mutation {
+  AuthenticateFacebookUser(facebookToken: String!): User
+}
+
