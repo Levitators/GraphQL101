@@ -1,5 +1,6 @@
 import { importSchema } from "graphql-import";
 import { GraphQLSchema } from "graphql";
+import { applyMiddleware } from 'graphql-middleware'
 import { mergeSchemas, makeExecutableSchema } from "graphql-tools";
 import * as path from "path";
 import * as fs from "fs";
@@ -13,7 +14,9 @@ folders.forEach(folder => {
   const typeDefs = importSchema(
     path.join(__dirname, `../modules/${folder}/schema.graphql`)
   );
-  schemas.push(makeExecutableSchema({ resolvers, typeDefs }));
+  const dummySchemea = makeExecutableSchema({ resolvers, typeDefs })
+  const { permissions } = require(`../modules/${folder}/permissions`);
+  schemas.push(applyMiddleware(dummySchemea, permissions));
 });
 return mergeSchemas({ schemas });
 }

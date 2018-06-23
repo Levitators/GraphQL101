@@ -6,7 +6,7 @@ import * as dotenv from 'dotenv-safe';
 dotenv.config()
 
 
-const server = new GraphQLServer({ schema: generateSchema() });
+const server = new GraphQLServer({ schema: generateSchema(), context: req => ({ ...req }) });
 createConnection()
   .then(() => {
     server.start(() => console.log(`Server is running on localhost:${process.env.PORT}`));
