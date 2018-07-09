@@ -17,6 +17,6 @@ type Query {
 }
 
 type Mutation {
-  AuthenticateFacebookUser(facebookToken: String!): AuthResponse
+  AuthenticateGoogleUser(googleToken: String!): AuthResponse
 }
 

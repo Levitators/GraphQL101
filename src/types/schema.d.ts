@@ -25,6 +25,7 @@ __typename: "Query";
 users: Array<IUser> | null;
 user: IUser | null;
 facebookUser: IUser | null;
+googleUser: IUser | null;
 }
 
 interface IUserOnQueryArguments {
@@ -33,6 +34,10 @@ email: string;
 
 interface IFacebookUserOnQueryArguments {
 facebookUserId: string;
+}
+
+interface IGoogleUserOnQueryArguments {
+googleUserId: string;
 }
 
 interface IUser {
@@ -47,11 +52,16 @@ username: string;
 interface IMutation {
 __typename: "Mutation";
 AuthenticateFacebookUser: IAuthResponse | null;
+AuthenticateGoogleUser: IAuthResponse | null;
 createUser: IUser | null;
 }
 
 interface IAuthenticateFacebookUserOnMutationArguments {
 facebookToken: string;
+}
+
+interface IAuthenticateGoogleUserOnMutationArguments {
+googleToken: string;
 }
 
 interface ICreateUserOnMutationArguments {

@@ -10,6 +10,7 @@ type Query {
   users: [User]
   user(email: String!): User
   facebookUser(facebookUserId: String!): User
+  googleUser(googleUserId: String!): User
 }
 
 type Mutation {

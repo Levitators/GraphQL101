@@ -10,8 +10,11 @@ interface User {
 }
 
 export const facebookUser = async (facebookUserId: string): Promise<User | undefined> => {
-  console.log(facebookUserId)
   return Promise.resolve(await UserEntity.findOne({ where: { facebookUserId } }))
+}
+
+export const googleUser = async (googleUserId: string): Promise<User | undefined> => {
+  return Promise.resolve(await UserEntity.findOne({ where: { googleUserId } }))
 }
 
 export const user = async (email: string): Promise<User | undefined> => {
@@ -30,6 +33,9 @@ export const resolvers: ResolverMap = {
     },
     facebookUser: async (_, { facebookUserId }: GQL.IFacebookUserOnQueryArguments): Promise<User | undefined> => {
       return Promise.resolve(await facebookUser(facebookUserId))
+    },
+    googleUser: async (_, { googleUserId }: GQL.IGoogleUserOnQueryArguments): Promise<User | undefined> => {
+      return Promise.resolve(await googleUser(googleUserId))
     },
     user: async (_, { email }: GQL.IUserOnQueryArguments): Promise<User | undefined> => {
       return Promise.resolve(await user(email))
